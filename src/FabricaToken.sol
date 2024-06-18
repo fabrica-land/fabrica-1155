@@ -65,12 +65,15 @@ contract FabricaToken is Initializable, ERC165Upgradeable, IERC1155Upgradeable, 
 
     address private _validatorRegistry;
 
+    string private _contractURI;
+
     // On-chain data update
     event UpdateConfiguration(uint256, string newData);
     event UpdateOperatingAgreement(uint256, string newData);
     event UpdateValidator(uint256 tokenId, string dataType, address validator);
     event TraitMetadataURIUpdated();
     event TraitUpdated(bytes32 indexed traitKey, uint256 tokenId, bytes32 traitValue);
+    event ContractURIUpdated();
 
     /**
      * @dev See {IERC165-supportsInterface}.
@@ -140,6 +143,17 @@ contract FabricaToken is Initializable, ERC165Upgradeable, IERC1155Upgradeable, 
     // getTraitMetadataURI() defined as part of the ERC-7496 Specification
     function getTraitMetadataURI() external pure returns (string memory) {
         return "data:application/json;charset=utf-8;base64,ewogICJ0cmFpdHMiOiB7CiAgICAidmFsaWRhdG9yIjogewogICAgICAiZGlzcGxheU5hbWUiOiAiVmFsaWRhdG9yIiwKICAgICAgImRhdGFUeXBlIjogewogICAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICAgIm1pbkxlbmd0aCI6IDEKICAgICAgfSwKICAgICAgInZhbGlkYXRlT25TYWxlIjogInJlcXVpcmVFcSIKICAgIH0sCiAgICAib3BlcmF0aW5nQWdyZWVtZW50IjogewogICAgICAiZGlzcGxheU5hbWUiOiAiT3BlcmF0aW5nIEFncmVlbWVudCIsCiAgICAgICJkYXRhVHlwZSI6IHsKICAgICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAgICJtaW5MZW5ndGgiOiAxCiAgICAgIH0sCiAgICAgICJ2YWxpZGF0ZU9uU2FsZSI6ICJyZXF1aXJlRXEiCiAgICB9CiAgfQp9";
+    }
+
+    /**
+     * Implements ERC-7572: Contract-level metadata
+     */
+    function contractURI() public view returns (string memory) {
+        return _contractURI;
+    }
+    function setContractURI(string memory newURI) external onlyOwner {
+        _contractURI = newURI;
+        emit ContractURIUpdated();
     }
 
     /**
